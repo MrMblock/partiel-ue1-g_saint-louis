@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Affichage Médicaments</title>
+</head>
+<body>
+
+    <table>
+        <thead>
+            <tr>
+                <td>Nom</td>
+                <td>Description</td>
+                <td>Date d'approbation</td>
+            </tr>
+        </thead>
+        <tbody id="medicamentsTable">
+            <!-- Le contenu de l'API sera injecté ici -->
+        </tbody>
+    </table>
+
+    <script>
+        function fetchMedicamentsData() {
+            
+            const apiUrl = 'https://www.ZombieMedoc.fr/api/medicaments';
+
+            // Appel API avec fetch
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    const medicaments = data.data;
+                    const tableBody = document.getElementById('medicamentsTable');
+
+                    // Vérifie si des données sont présentes
+                    if (medicaments && medicaments.length > 0) {
+                        medicaments.forEach(medicament => {
+                            const row = document.createElement('tr');
+
+                            // Crée chaque cellule et les ajoute à la ligne
+                            const nomCell = document.createElement('td');
+                            nomCell.textContent = medicament.nom || "Non défini";
+                            row.appendChild(nomCell);
+
+                            const descriptionCell = document.createElement('td');
+                            descriptionCell.textContent = medicament.description || "Non défini";
+                            row.appendChild(descriptionCell);
+
+                            const dateCell = document.createElement('td');
+                            dateCell.textContent = medicament.date_approbation || "Non défini";
+                            row.appendChild(dateCell);
+
+                            // Ajoute la ligne à la table
+                            tableBody.appendChild(row);
+                        });
+                    } else {
+                        const title = document.createElement('h1');
+                        title.textContent = "Pas de résultats"
+                    }
+                })
+                .catch(error => {
+                    console.error("Erreur lors de la récupération des données de l'API : ", error);
+                });
+        }
+
+        // Appel de la fonction directement au chargement de la page
+        window.onload = fetchMedicamentsData;
+    </script>
+
+</body>
+</html>
